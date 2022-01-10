@@ -2,6 +2,7 @@ package com.binus.takenote;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,7 +17,7 @@ import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView tv_status;
+    private TextView tv_status, backBtn;
     private EditText et_title, et_detail;
     private static final String TAG = "DetailActivity";
 
@@ -32,10 +33,15 @@ public class DetailActivity extends AppCompatActivity {
         tv_status = findViewById(R.id.tv_status);
         et_title = findViewById(R.id.et_title);
         et_detail = findViewById(R.id.et_detail);
+        backBtn = findViewById(R.id.back_btn);
 
         SimpleDateFormat postFormater = new SimpleDateFormat("MMM dd, yyyy");
         String newDateStr = postFormater.format(new Date());
         tv_status.setText(newDateStr + " | " + "0 character(s)");
+
+        backBtn.setOnClickListener(v -> {
+            startActivity(new Intent(DetailActivity.this, HomeActivity.class));
+        });
     }
 
     private void setText(){

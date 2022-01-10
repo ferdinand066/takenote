@@ -1,6 +1,7 @@
 package com.binus.takenote.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.binus.takenote.DetailActivity;
+import com.binus.takenote.HomeActivity;
 import com.binus.takenote.R;
 import com.binus.takenote.model.Note;
 
@@ -38,11 +42,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
         holder.titleLbl.setText(note.getTitle());
         holder.contentLbl.setText(note.getContent());
         holder.dateLbl.setText(note.getLastEdited().toString());
-//        holder.orderBtn.setOnClickListener(v -> {
-//            Intent intent = new Intent(context, OrderActivity.class);
-//            intent.putExtra("menu", menu);
-//            context.startActivity(intent);
-//        });
+        holder.itemView.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, DetailActivity.class));
+        });
     }
 
     @Override

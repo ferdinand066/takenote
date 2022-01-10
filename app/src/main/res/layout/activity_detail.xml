@@ -4,36 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:padding="16dp"
     android:orientation="vertical"
+    android:background="@color/primary"
     tools:context=".DetailActivity">
+
+    <TextView
+        android:id="@+id/back_btn"
+        android:text="@string/back_btn_text"
+        android:textColor="@color/light_gray"
+        android:textSize="20sp"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="date | characters"
         android:id="@+id/tv_status"
+        android:textColor="@color/light_gray"
+        android:layout_marginTop="12dp"
         android:layout_gravity="right" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_title"
-        android:hint="Title"
+        android:hint="@string/title_hint"
+        android:backgroundTint="@color/gray"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/gray"
         android:inputType="textNoSuggestions"
         android:padding="10dp"
-        android:textSize="20sp" />
+        android:textSize="24sp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_detail"
-        android:hint="Start typing.."
+        android:hint="@string/content_hint"
         android:background="@null"
+        android:textColorHint="@color/light_gray"
+        android:textColor="@color/light_gray"
         android:inputType="textNoSuggestions|textMultiLine"
         android:gravity="top"
         android:minLines="4"
+        android:layout_marginTop="12dp"
         android:padding="10dp"
-        android:textSize="15sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>
