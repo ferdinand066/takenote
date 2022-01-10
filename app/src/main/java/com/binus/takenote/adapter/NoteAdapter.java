@@ -42,9 +42,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
         holder.titleLbl.setText(note.getTitle());
         holder.contentLbl.setText(note.getContent());
         holder.dateLbl.setText(note.getLastEdited().toString());
-        holder.itemView.setOnClickListener(v -> {
-            context.startActivity(new Intent(context, DetailActivity.class));
-        });
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, DetailActivity.class)));
     }
 
     @Override

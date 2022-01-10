@@ -39,9 +39,7 @@ public class DetailActivity extends AppCompatActivity {
         String newDateStr = postFormater.format(new Date());
         tv_status.setText(newDateStr + " | " + "0 character(s)");
 
-        backBtn.setOnClickListener(v -> {
-            startActivity(new Intent(DetailActivity.this, HomeActivity.class));
-        });
+        backBtn.setOnClickListener(v -> startActivity(new Intent(DetailActivity.this, HomeActivity.class)));
     }
 
     private void setText(){
