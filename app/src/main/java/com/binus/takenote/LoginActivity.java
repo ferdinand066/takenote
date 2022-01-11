@@ -58,15 +58,6 @@ public class LoginActivity extends AppCompatActivity {
             if (authAccountTask.isSuccessful()) {
                 // The sign-in is successful, and the authAccount object that contains the HUAWEI ID information is obtained.
                 AuthAccount authAccount = authAccountTask.getResult();
-                Log.i(TAG, "display name:" + authAccount.getDisplayName());
-                Log.i(TAG, "photo uri string:" + authAccount.getAvatarUriString());
-                Log.i(TAG, "photo uri:" + authAccount.getAvatarUri());
-                Log.i(TAG, "email:" + authAccount.getEmail());
-                Log.i(TAG, "openid:" + authAccount.getOpenId());
-                Log.i(TAG, "unionid:" + authAccount.getAuthorizationCode());
-                Log.i(TAG, "agerange:" + authAccount.getAgeRange());
-
-// when the user login sucesfully , i will get all the details and i am passing all to the next activity via the intent .
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 SharedPreferences sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();

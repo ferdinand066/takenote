@@ -142,6 +142,11 @@ public class HomeActivity extends AppCompatActivity {
             Log.i(TAG, "signout failed"+e.getMessage());
         });
         Intent i = new Intent(HomeActivity.this, LoginActivity.class);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+
         startActivity(i);
         finish();
     }
