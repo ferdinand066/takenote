@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "213886982782",
+    "project_id": "takenote-35f1b",
+    "storage_bucket": "takenote-35f1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:213886982782:android:298284f17f2684df35162f",
+        "android_client_info": {
+          "package_name": "com.binus.takenote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "213886982782-1a4k3hqhgoo9im8idtvu4auccvvbmm8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGHDhoi9WQgrvqDh23U3GiFoOZ065CZNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "213886982782-1a4k3hqhgoo9im8idtvu4auccvvbmm8b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

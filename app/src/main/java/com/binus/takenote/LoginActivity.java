@@ -2,7 +2,9 @@ package com.binus.takenote;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -65,13 +67,14 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "agerange:" + authAccount.getAgeRange());
 
 // when the user login sucesfully , i will get all the details and i am passing all to the next activity via the intent .
-                Intent intent = new Intent(LoginActivity.this, UserActivity.class);
-                intent.putExtra("name", authAccount.getDisplayName());
-                intent.putExtra("email", authAccount.getEmail());
-                intent.putExtra("photo_uri", authAccount.getAvatarUriString());
-                intent.putExtra("auth", authAccount.getAuthorizationCode());
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                SharedPreferences sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("id", authAccount.getUnionId());
+                editor.commit();
 
                 startActivity(intent);
+                finish();
             } else {
                 // The sign-in fails. Find the failure cause from the status code. For more information, please refer to the "Error Codes" section in the API Reference.
                 Log.e(TAG, "sign in failed : " + ((ApiException) authAccountTask.getException()).getStatusCode());

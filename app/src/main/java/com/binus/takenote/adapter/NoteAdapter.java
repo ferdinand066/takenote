@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,10 @@ import com.binus.takenote.HomeActivity;
 import com.binus.takenote.R;
 import com.binus.takenote.model.Note;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
 
@@ -38,11 +42,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull NoteAdapter.ViewHolder holder, int position) {
         Note note = notes.get(position);
-
+        SimpleDateFormat postFormater = new SimpleDateFormat("MMM dd, yyyy");
+        String newDateStr = postFormater.format(note.getLastEdited());
         holder.titleLbl.setText(note.getTitle());
         holder.contentLbl.setText(note.getContent());
-        holder.dateLbl.setText(note.getLastEdited().toString());
-        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, DetailActivity.class)));
+        holder.dateLbl.setText(newDateStr);
+        holder.itemView.setOnClickListener(v -> {
+            Intent i = new Intent(context, DetailActivity.class);
+            i.putExtra("noteId", note.getId());
+            i.putExtra("note", note);
+            context.startActivity(i);
+        });
     }
 
     @Override
