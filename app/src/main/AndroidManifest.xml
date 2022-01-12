@@ -24,7 +24,6 @@
 
         </activity>
         <activity android:name=".DetailActivity"></activity>
-        <activity android:name=".UserActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
