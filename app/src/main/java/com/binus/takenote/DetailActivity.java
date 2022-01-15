@@ -16,7 +16,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.binus.takenote.model.Note;
+import com.binus.takenote.model.NoteDB;
+import com.binus.takenote.model.ObjectTypeInfoHelper;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.huawei.agconnect.AGCRoutePolicy;
+import com.huawei.agconnect.AGConnectInstance;
+import com.huawei.agconnect.AGConnectOptionsBuilder;
+import com.huawei.agconnect.auth.AGConnectAuth;
+import com.huawei.agconnect.cloud.database.AGConnectCloudDB;
+import com.huawei.agconnect.cloud.database.CloudDBZone;
+import com.huawei.agconnect.cloud.database.CloudDBZoneConfig;
+import com.huawei.hmf.tasks.OnFailureListener;
+import com.huawei.hmf.tasks.OnSuccessListener;
+import com.huawei.hmf.tasks.Task;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -35,6 +47,10 @@ public class DetailActivity extends AppCompatActivity {
     Note note = null;
     ImageView icDelete;
 
+    AGConnectCloudDB mCloudDB;
+    CloudDBZoneConfig mConfig;
+    CloudDBZone mCloudDBZone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +65,7 @@ public class DetailActivity extends AppCompatActivity {
         etDetail = findViewById(R.id.et_detail);
         backBtn = findViewById(R.id.back_btn);
         icDelete = findViewById(R.id.ic_delete);
+        initDatabase();
 
         sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
 
@@ -69,45 +86,85 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         backBtn.setOnClickListener(v -> {
-            updateData();
+            updateNoteData();
             startActivity(new Intent(DetailActivity.this, HomeActivity.class))         ;
             finish();
         });
 
         icDelete.setOnClickListener(v -> {
-            deleteData();
-
+            deleteNote();
         });
     }
 
-    private void updateData(){
+    private void initDatabase() {
+        AGConnectCloudDB.initialize(this);
+        AGConnectInstance instance = AGConnectInstance.buildInstance(new AGConnectOptionsBuilder().setRoutePolicy(AGCRoutePolicy.SINGAPORE).build(this));
+        mCloudDB = AGConnectCloudDB.getInstance(instance, AGConnectAuth.getInstance());
+        try {
+            mCloudDB.createObjectType(ObjectTypeInfoHelper.getObjectTypeInfo());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mConfig = new CloudDBZoneConfig("Takenote",
+                CloudDBZoneConfig.CloudDBZoneSyncProperty.CLOUDDBZONE_CLOUD_CACHE,
+                CloudDBZoneConfig.CloudDBZoneAccessProperty.CLOUDDBZONE_PUBLIC);
+
+        mConfig.setPersistenceEnabled(true);
+        Task<CloudDBZone> openDBZoneTask = mCloudDB.openCloudDBZone2(mConfig, true);
+        openDBZoneTask.addOnSuccessListener(cloudDBZone -> {
+            Log.i(TAG, "open cloudDBZone success");
+            mCloudDBZone = cloudDBZone;
+        }).addOnFailureListener(e -> Log.w(TAG, "open cloudDBZone failed for " + e.getMessage()));
+    }
+
+    public void updateNoteData() {
+        String id = getIntent().getStringExtra("noteId");
         String title = etTitle.getText().toString();
         String content = etDetail.getText().toString();
         Date date = new Date();
-        Map<String, Object> note = new HashMap<>();
-        note.put("id", getIntent().getStringExtra("noteId"));
-        note.put("title", title);
-        note.put("content", content);
-        note.put("lastEdited", date);
 
-        Log.d("Detail", sharedPreferences.getString("id", null));
-        Log.d("Detail", getIntent().getStringExtra("noteId"));
+        NoteDB n = new NoteDB();
+        n.setId(id);
+        n.setUserId(sharedPreferences.getString("id", null));
+        n.setTitle(title);
+        n.setContent(content);
+        n.setDate(date);
 
-        db.collection(sharedPreferences.getString("id", null))
-                .document(getIntent().getStringExtra("noteId")).set(note);
+        if (mCloudDBZone == null) {
+            Log.w(TAG, "CloudDBZone is null, try re-open it");
+            return;
+        }
+
+        Task<Integer> upsertTask = mCloudDBZone.executeUpsert(n);
+        upsertTask.addOnSuccessListener(cloudDBZoneResult -> Log.i(TAG, "Upsert " + cloudDBZoneResult + " records"))
+                .addOnFailureListener(e -> Log.i(TAG, "Gagal karena "+  e.getMessage()));
     }
 
-    private void deleteData(){
-        if (note != null){
-            db.collection(sharedPreferences.getString("id", null))
-                    .document(getIntent().getStringExtra("noteId")).delete();
+    private void deleteNote(){
+        if (mCloudDBZone == null) {
+            Log.w(TAG, "CloudDBZone is null, try re-open it");
+            return;
+        }
+
+        NoteDB n = new NoteDB();
+        n.setId(note.getId());
+        Log.i(TAG, "id = " +n.getId());
+
+        Task<Integer> deleteTask = mCloudDBZone.executeDelete(n);
+        deleteTask.addOnSuccessListener(integer -> {
             startActivity(new Intent(DetailActivity.this, HomeActivity.class));
             finish();
-        }
+        }).addOnFailureListener(e -> {
+            Log.i(TAG, "Gagal karena" + e.getMessage());
+            startActivity(new Intent(DetailActivity.this, HomeActivity.class));
+            finish();
+        });
     }
+
     @Override
     public void onBackPressed() {
-        updateData();
+        updateNoteData();
         Intent i = new Intent(DetailActivity.this, HomeActivity.class);
         startActivity(i);
         finish();

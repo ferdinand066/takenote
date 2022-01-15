@@ -8,6 +8,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.huawei.agconnect.api.AGConnectApi;
+import com.huawei.agconnect.auth.AGConnectAuth;
+import com.huawei.agconnect.auth.AGConnectAuthCredential;
+import com.huawei.agconnect.auth.AGConnectUser;
+import com.huawei.agconnect.auth.SignInResult;
+import com.huawei.agconnect.cloud.database.AGConnectCloudDB;
+import com.huawei.agconnect.cloud.database.CloudDBZone;
+import com.huawei.agconnect.cloud.database.CloudDBZoneConfig;
+import com.huawei.hmf.tasks.OnFailureListener;
+import com.huawei.hmf.tasks.OnSuccessListener;
 import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.common.ApiException;
 import com.huawei.hms.support.account.AccountAuthManager;
@@ -61,11 +71,28 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 SharedPreferences sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("id", authAccount.getUnionId());
-                editor.commit();
 
-                startActivity(intent);
-                finish();
+                AGConnectApi.getInstance().activityLifecycle().onActivityResult(requestCode, resultCode, data);
+                AGConnectAuth.getInstance().signIn(this, AGConnectAuthCredential.HMS_Provider).addOnSuccessListener(new OnSuccessListener<SignInResult>() {
+                    @Override
+                    public void onSuccess(SignInResult signInResult) {
+                        // onSuccess
+                        AGConnectUser user =  signInResult.getUser();
+                        editor.putString("id", user.getUid());
+                        editor.commit();
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+
+
             } else {
                 // The sign-in fails. Find the failure cause from the status code. For more information, please refer to the "Error Codes" section in the API Reference.
                 Log.e(TAG, "sign in failed : " + ((ApiException) authAccountTask.getException()).getStatusCode());

@@ -38,6 +38,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:24.0.0'
     testImplementation 'junit:junit:4.+'
     implementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
+    implementation 'com.huawei.agconnect:agconnect-cloud-database:1.5.0.300'
+    implementation "com.huawei.agconnect:agconnect-auth:1.6.2.300"
+    implementation "com.huawei.agconnect:agconnect-auth-huawei:1.6.2.300"
     implementation 'com.huawei.hms:ads:3.4.48.301'
     implementation 'com.huawei.hms:ads-lite:3.4.48.301'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
