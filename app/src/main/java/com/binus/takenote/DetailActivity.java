@@ -1,10 +1,14 @@
 package com.binus.takenote;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,7 +22,6 @@ import android.widget.TextView;
 import com.binus.takenote.model.Note;
 import com.binus.takenote.model.NoteDB;
 import com.binus.takenote.model.ObjectTypeInfoHelper;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.huawei.agconnect.AGCRoutePolicy;
 import com.huawei.agconnect.AGConnectInstance;
 import com.huawei.agconnect.AGConnectOptionsBuilder;
@@ -42,7 +45,6 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tvStatus, backBtn;
     private EditText etTitle, etDetail;
     private static final String TAG = "DetailActivity";
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     SharedPreferences sharedPreferences;
     Note note = null;
     ImageView icDelete;
@@ -137,6 +139,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         Task<Integer> upsertTask = mCloudDBZone.executeUpsert(n);
+        pushNotification("Successfully Update Note", "Don't worry, your progress already been saved!");
         upsertTask.addOnSuccessListener(cloudDBZoneResult -> Log.i(TAG, "Upsert " + cloudDBZoneResult + " records"))
                 .addOnFailureListener(e -> Log.i(TAG, "Gagal karena "+  e.getMessage()));
     }
@@ -153,10 +156,12 @@ public class DetailActivity extends AppCompatActivity {
 
         Task<Integer> deleteTask = mCloudDBZone.executeDelete(n);
         deleteTask.addOnSuccessListener(integer -> {
+            pushNotification("Successfully Delete Note", "Don't worry, your note is deleted!");
             startActivity(new Intent(DetailActivity.this, HomeActivity.class));
             finish();
         }).addOnFailureListener(e -> {
             Log.i(TAG, "Gagal karena" + e.getMessage());
+            pushNotification("Failed to Delete Note", "Sorry, we can't deleted your note. Please try again!");
             startActivity(new Intent(DetailActivity.this, HomeActivity.class));
             finish();
         });
@@ -165,6 +170,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         updateNoteData();
+        pushNotification("Successfully Update Note", "Don't worry, your progress already been saved!");
         Intent i = new Intent(DetailActivity.this, HomeActivity.class);
         startActivity(i);
         finish();
@@ -193,5 +199,25 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void pushNotification(String title, String content){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String channelId = "id";
+        String channelName = "name";
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.icon)
+                .setContentText(content);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        notificationManager.notify(1, builder.build());
+    }
+
 
 }
