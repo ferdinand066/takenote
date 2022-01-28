@@ -12,4 +12,12 @@
     <color name="primary">#1f1d2c</color>
     <color name="secondary">#282434</color>
     <color name="colorOnPrimary">#3b3947</color>
+
+    <color name="primaryPurple">#6F4062</color>
+    <color name="primaryOrange">#FFB961</color>
+    <color name="primaryYellow">#F9F871</color>
+
+    <color name="secondaryPurple">#880965</color>
+    <color name="secondaryOrange">#FF9A1C</color>
+    <color name="secondaryYellow">#FFFD24</color>
 </resources>
