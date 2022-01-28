@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="Profile"
+        android:title="Logout"
         android:iconTint="@color/colorOnPrimary"
-        android:icon="@drawable/ic_user_solid"
+        android:icon="@drawable/ic_sign_out_alt_solid"
         app:showAsAction="ifRoom"
-        android:id="@+id/nav_profile">
+        android:id="@+id/nav_logout">
     </item>
 </menu>
