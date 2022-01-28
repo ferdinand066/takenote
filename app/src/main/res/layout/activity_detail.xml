@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,65 +9,145 @@
     android:background="@color/primary"
     tools:context=".DetailActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/back_btn"
-            android:text="@string/back_btn_text"
-            android:textColor="@color/light_gray"
-            android:layout_gravity="center_vertical"
-            android:layout_alignParentLeft="true"
-            android:layout_height="30dp"
-            android:textSize="20sp"
-            android:layout_width="wrap_content"/>
+        android:id="@+id/header_container"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/back_btn"
+                android:text="@string/back_btn_text"
+                android:textColor="@color/light_gray"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"/>
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_alignParentRight="true"
-            android:id="@+id/ic_delete"
-            app:tint="@color/light_gray"
-            android:src="@drawable/ic_delete" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_toLeftOf="@id/ic_delete"
+                android:layout_marginHorizontal="15dp"
+                android:id="@+id/ic_brush"
+                app:tint="@color/light_gray"
+                android:src="@drawable/ic_brush" />
 
-    </RelativeLayout>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:id="@+id/ic_delete"
+                app:tint="@color/light_gray"
+                android:src="@drawable/ic_delete" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="date | characters"
-        android:id="@+id/tv_status"
-        android:textColor="@color/light_gray"
-        android:layout_marginTop="12dp"
-        android:layout_gravity="right" />
+        </RelativeLayout>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_title"
-        android:hint="@string/title_hint"
-        android:backgroundTint="@color/gray"
-        android:textColorHint="@color/gray"
-        android:textColor="@color/gray"
-        android:inputType="textNoSuggestions"
-        android:padding="10dp"
-        android:textSize="24sp" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_detail"
-        android:hint="@string/content_hint"
-        android:background="@null"
-        android:textColorHint="@color/light_gray"
-        android:textColor="@color/light_gray"
-        android:inputType="textNoSuggestions|textMultiLine"
-        android:gravity="top"
-        android:minLines="4"
-        android:layout_marginTop="12dp"
-        android:padding="10dp"
-        android:textSize="16sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="date | characters"
+                    android:id="@+id/tv_status"
+                    android:textColor="@color/light_gray"
+                    android:layout_marginTop="12dp"
+                    android:layout_gravity="right" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/et_title"
+                    android:hint="@string/title_hint"
+                    android:backgroundTint="@color/gray"
+                    android:textColorHint="@color/gray"
+                    android:textColor="@color/gray"
+                    android:inputType="textNoSuggestions"
+                    android:padding="10dp"
+                    android:textSize="24sp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/et_detail"
+                    android:hint="@string/content_hint"
+                    android:background="@null"
+                    android:textColorHint="@color/light_gray"
+                    android:textColor="@color/light_gray"
+                    android:inputType="textNoSuggestions|textMultiLine"
+                    android:gravity="top"
+                    android:minLines="4"
+                    android:layout_marginTop="12dp"
+                    android:padding="10dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="right"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="7dp"
+                    android:text="Dark" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="7dp"
+                    android:text="Purple" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="7dp"
+                    android:text="Orange" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="7dp"
+                    android:text="Yellow" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -19,9 +19,6 @@ import com.binus.takenote.model.Note;
 import com.binus.takenote.model.NoteDB;
 import com.binus.takenote.model.ObjectTypeInfoHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.huawei.agconnect.AGCRoutePolicy;
 import com.huawei.agconnect.AGConnectInstance;
 import com.huawei.agconnect.AGConnectOptionsBuilder;
@@ -60,7 +57,6 @@ public class HomeActivity extends AppCompatActivity {
     BannerView bannerView;
     SharedPreferences sharedPreferences;
     FloatingActionButton btnAdd;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     AccountAuthService authService;
     AccountAuthParams authParams;
     private static final String TAG = "HomeActivity";
