@@ -2,6 +2,7 @@ package com.binus.takenote;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,8 +16,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.binus.takenote.model.Note;
@@ -29,6 +33,7 @@ import com.huawei.agconnect.auth.AGConnectAuth;
 import com.huawei.agconnect.cloud.database.AGConnectCloudDB;
 import com.huawei.agconnect.cloud.database.CloudDBZone;
 import com.huawei.agconnect.cloud.database.CloudDBZoneConfig;
+import com.huawei.agconnect.cloud.database.Text;
 import com.huawei.hmf.tasks.OnFailureListener;
 import com.huawei.hmf.tasks.OnSuccessListener;
 import com.huawei.hmf.tasks.Task;
@@ -42,12 +47,15 @@ import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView tvStatus, backBtn;
+    private TextView tvStatus, backBtn, btnDark, btnPurple, btnOrange, btnYellow;
     private EditText etTitle, etDetail;
     private static final String TAG = "DetailActivity";
+    private LinearLayout themeList;
+    private int themeCode, titleColor, contentColor;
+    private RelativeLayout background;
     SharedPreferences sharedPreferences;
     Note note = null;
-    ImageView icDelete;
+    ImageView icDelete, icBrush;
 
     AGConnectCloudDB mCloudDB;
     CloudDBZoneConfig mConfig;
@@ -67,6 +75,14 @@ public class DetailActivity extends AppCompatActivity {
         etDetail = findViewById(R.id.et_detail);
         backBtn = findViewById(R.id.back_btn);
         icDelete = findViewById(R.id.ic_delete);
+        icBrush = findViewById(R.id.ic_brush);
+        themeList = findViewById(R.id.theme_list);
+        btnDark = createThemeButton(R.id.btn_dark, 1);
+        btnPurple = createThemeButton(R.id.btn_purple, 2);
+        btnOrange = createThemeButton(R.id.btn_orange, 3);
+        btnYellow = createThemeButton(R.id.btn_yellow, 4);
+        background = findViewById(R.id.background);
+
         initDatabase();
 
         sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
@@ -82,10 +98,14 @@ public class DetailActivity extends AppCompatActivity {
                     .replace(" ", "")
                     .replace("\n", "").length();
             tvStatus.setText(newDateStr + " | " + length + " character(s)");
+            themeCode = note.getColor();
         } else {
             String newDateStr = postFormater.format(new Date());
             tvStatus.setText(newDateStr + " | " + "0 character(s)");
+            themeCode = 1;
         }
+
+        changeTheme();
 
         backBtn.setOnClickListener(v -> {
             updateNoteData();
@@ -96,7 +116,23 @@ public class DetailActivity extends AppCompatActivity {
         icDelete.setOnClickListener(v -> {
             deleteNote();
         });
+
+        icBrush.setOnClickListener(v -> {
+            themeList.setVisibility(themeList.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        });
+
     }
+
+    private TextView createThemeButton(int buttonId, int themeNumber){
+        TextView temp = findViewById(buttonId);
+        temp.setOnClickListener(v -> {
+            themeCode = themeNumber;
+            themeList.setVisibility(View.GONE);
+            changeTheme();
+        });
+        return temp;
+    }
+
 
     private void initDatabase() {
         AGConnectCloudDB.initialize(this);
@@ -132,6 +168,7 @@ public class DetailActivity extends AppCompatActivity {
         n.setTitle(title);
         n.setContent(content);
         n.setDate(date);
+        n.setColor(themeCode);
 
         if (mCloudDBZone == null) {
             Log.w(TAG, "CloudDBZone is null, try re-open it");
@@ -219,5 +256,47 @@ public class DetailActivity extends AppCompatActivity {
         notificationManager.notify(1, builder.build());
     }
 
+    private void changeTheme(){
+        int color = -1;
+        switch (themeCode){
+            case 1:
+                color = R.color.secondary;
+                titleColor = R.color.gray;
+                contentColor = R.color.light_gray;
+                break;
+            case 2:
+                color = R.color.primaryPurple;
+                titleColor = R.color.gray;
+                contentColor = R.color.gray;
+                break;
+            case 3:
+                color = R.color.primaryOrange;
+                titleColor = R.color.light_gray;
+                contentColor = R.color.light_gray;
+                break;
+            default:
+                color = R.color.primaryYellow;
+                titleColor = R.color.light_gray;
+                contentColor = R.color.light_gray;
+                break;
+        }
+
+        titleColor = ContextCompat.getColor(this, titleColor);
+        contentColor = ContextCompat.getColor(this, contentColor);
+
+        backBtn.setTextColor(contentColor);
+        icBrush.setColorFilter(contentColor);
+        icDelete.setColorFilter(contentColor);
+        tvStatus.setTextColor(contentColor);
+
+        etTitle.getBackground().setTint(titleColor);
+        etTitle.setHintTextColor(titleColor);
+        etTitle.setTextColor(titleColor);
+
+        etDetail.setHintTextColor(contentColor);
+        etDetail.setTextColor(contentColor);
+
+        background.setBackgroundColor(ContextCompat.getColor(this, color));
+    }
 
 }

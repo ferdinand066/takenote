@@ -8,12 +8,22 @@ import java.util.Date;
 public class Note implements Parcelable {
     private String id, title, content;
     private Date lastEdited;
+    private int color;
 
-    public Note(String id, String title, String content, Date lastEdited) {
+    public Note(String id, String title, String content, Date lastEdited, int color) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.lastEdited = lastEdited;
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public Note(Parcel in){
@@ -21,6 +31,7 @@ public class Note implements Parcelable {
         this.title = in.readString();
         this.content = in.readString();
         this.lastEdited = (Date)in.readSerializable();
+        this.color = in.readInt();
     }
 
 
@@ -67,6 +78,7 @@ public class Note implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(content);
         parcel.writeSerializable(lastEdited);
+        parcel.writeInt(color);
     }
 
     public static final Parcelable.Creator<Note> CREATOR = new Parcelable.Creator<Note>() {

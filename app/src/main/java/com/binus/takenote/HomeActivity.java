@@ -148,7 +148,7 @@ public class HomeActivity extends AppCompatActivity {
                 NoteDB n = c.next();
                 bookInfoList.add(n);
                 if(n.getUserId().equals(sharedPreferences.getString("id", null))){
-                    notes.add( new Note(n.getId(), n.getTitle(), n.getContent(), n.getDate()));
+                    notes.add( new Note(n.getId(), n.getTitle(), n.getContent(), n.getDate(), n.getColor()));
                 }
             }
         } catch (AGConnectCloudDBException e) {
@@ -172,7 +172,6 @@ public class HomeActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.nav_profile:
                 startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
-                finish();
         }
 
         return super.onOptionsItemSelected(item);

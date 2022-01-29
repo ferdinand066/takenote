@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * Definition of ObjectType NoteDB.
  *
- * @since 2022-01-15
+ * @since 2022-01-28
  */
 @PrimaryKeys({"id"})
 @Indexes({"NoteIndex:id"})
@@ -38,11 +38,15 @@ public final class NoteDB extends CloudDBZoneObject {
 
     private Date date;
 
+    @DefaultValue(intValue = 1)
+    private Integer color;
+
     public NoteDB() {
         super(NoteDB.class);
         this.userId = "-";
         this.title = "-";
         this.content = "-";
+        this.color = 1;
     }
 
     public void setId(String id) {
@@ -83,6 +87,14 @@ public final class NoteDB extends CloudDBZoneObject {
 
     public Date getDate() {
         return date;
+    }
+
+    public void setColor(Integer color) {
+        this.color = color;
+    }
+
+    public Integer getColor() {
+        return color;
     }
 
 }
