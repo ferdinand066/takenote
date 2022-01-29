@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.binus.takenote.helper.UserSession;
 import com.huawei.agconnect.api.AGConnectApi;
 import com.huawei.agconnect.auth.AGConnectAuth;
 import com.huawei.agconnect.auth.AGConnectAuthCredential;
@@ -78,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(SignInResult signInResult) {
                         // onSuccess
                         AGConnectUser user =  signInResult.getUser();
+                        UserSession.getInstance().setUser(user);
                         editor.putString("id", user.getUid());
                         editor.commit();
                         startActivity(intent);

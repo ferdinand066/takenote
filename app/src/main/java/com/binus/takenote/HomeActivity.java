@@ -170,31 +170,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.nav_logout:
-                logout();
+            case R.id.nav_profile:
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
                 finish();
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    public void logout(){
-        Task<Void> signOutTask = authService.signOut();
-        signOutTask.addOnCompleteListener(task -> {
-            Log.i(TAG, "signOut complete");
-        });
-        signOutTask.addOnFailureListener(e -> {
-            Log.i(TAG, "signout failed"+e.getMessage());
-        });
-        Intent i = new Intent(HomeActivity.this, LoginActivity.class);
-        SharedPreferences sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.commit();
-
-        startActivity(i);
-        finish();
-    }
-
 
 }
