@@ -30,16 +30,18 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
 
     private ArrayList<Note> notes;
     private Context context;
+    private int layout;
 
-    public NoteAdapter(ArrayList<Note> notes, Context context) {
+    public NoteAdapter(ArrayList<Note> notes, Context context, int layout) {
         this.notes = notes;
         this.context = context;
+        this.layout = layout;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
 
         return new ViewHolder(view);
     }
