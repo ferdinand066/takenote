@@ -3,4 +3,5 @@
     <string name="title_hint">Title</string>
     <string name="content_hint">Start typing..</string>
     <string name="back_btn_text"><![CDATA[< Notes]]></string>
+    <string name="calendar_back_text"><![CDATA[< Back]]></string>
 </resources>

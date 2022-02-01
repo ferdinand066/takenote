@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:title="Calendar"
+        android:iconTint="@color/colorOnPrimary"
+        android:icon="@drawable/ic_calendar_solid"
+        app:showAsAction="ifRoom"
+        android:id="@+id/nav_calendar">
+    </item>
+    <item
         android:title="Profile"
         android:iconTint="@color/colorOnPrimary"
         android:icon="@drawable/ic_user_solid"
