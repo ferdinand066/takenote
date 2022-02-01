@@ -16,11 +16,19 @@
         app:showAsAction="always"
         android:id="@+id/nav_grid">
     </item>
+    <item
         android:title="Calendar"
         android:iconTint="@color/colorOnPrimary"
         android:icon="@drawable/ic_calendar_solid"
         app:showAsAction="ifRoom"
         android:id="@+id/nav_calendar">
+    </item>
+    <item
+        android:title="Notes"
+        android:iconTint="@color/colorOnPrimary"
+        android:icon="@drawable/ic_sticky_note_solid"
+        app:showAsAction="ifRoom"
+        android:id="@+id/nav_notes">
     </item>
     <item
         android:title="Profile"
@@ -29,4 +37,5 @@
         app:showAsAction="ifRoom"
         android:id="@+id/nav_profile">
     </item>
+
 </menu>

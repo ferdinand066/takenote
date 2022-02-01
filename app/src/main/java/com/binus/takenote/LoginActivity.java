@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.binus.takenote.helper.UserSession;
+import com.google.firebase.firestore.auth.User;
 import com.huawei.agconnect.api.AGConnectApi;
 import com.huawei.agconnect.auth.AGConnectAuth;
 import com.huawei.agconnect.auth.AGConnectAuthCredential;
@@ -80,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                         // onSuccess
                         AGConnectUser user =  signInResult.getUser();
                         UserSession.getInstance().setUser(user);
+                        UserSession.getInstance().setAccount(authAccount);
                         editor.putString("id", user.getUid());
                         editor.commit();
                         startActivity(intent);

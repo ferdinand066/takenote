@@ -168,6 +168,8 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nav_menu, menu);
         this.menu = menu;
+        MenuItem navNotes = menu.findItem(R.id.nav_notes);
+        navNotes.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -175,6 +177,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         MenuItem navGrid = menu.findItem(R.id.nav_grid);
         MenuItem navList = menu.findItem(R.id.nav_list);
+
         switch (item.getItemId()){
             case R.id.nav_profile:
                 startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
@@ -188,6 +191,7 @@ public class HomeActivity extends AppCompatActivity {
                 navGrid.setVisible(true);
                 navList.setVisible(false);
                 noteList.setLayoutManager(new GridLayoutManager(this, 1));
+                break;
             case R.id.nav_calendar:
                 startActivity(new Intent(HomeActivity.this, CalendarActivity.class));
                 break;

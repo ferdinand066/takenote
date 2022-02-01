@@ -19,6 +19,7 @@ import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.support.account.AccountAuthManager;
 import com.huawei.hms.support.account.request.AccountAuthParams;
 import com.huawei.hms.support.account.request.AccountAuthParamsHelper;
+import com.huawei.hms.support.account.result.AuthAccount;
 import com.huawei.hms.support.account.service.AccountAuthService;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -28,6 +29,7 @@ public class ProfileActivity extends AppCompatActivity {
     AccountAuthService authService;
     AccountAuthParams authParams;
     AGConnectUser currUser;
+    AuthAccount account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +45,12 @@ public class ProfileActivity extends AppCompatActivity {
         authService = AccountAuthManager.getService(this, authParams);
 
         currUser = UserSession.getInstance().getUser();
-        String imageUrl = currUser.getPhotoUrl();
-        String username = currUser.getDisplayName();
-        String email = currUser.getEmail();
+        account = UserSession.getInstance().getAccount();
+        String imageUrl = account.getAvatarUriString();
+        String username = account.getDisplayName();
+        String email = account.getEmail();
 
-        if(email == null || email.isEmpty()){
+        if(email == null || email.isEmpty() || email.equals("")){
             email = currUser.getPhone();
         }
 

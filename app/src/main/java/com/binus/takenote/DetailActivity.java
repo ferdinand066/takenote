@@ -187,6 +187,10 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
+        if(title.isEmpty() && content.isEmpty()){
+            return;
+        }
+
         Task<Integer> upsertTask = mCloudDBZone.executeUpsert(n);
         pushNotification("Successfully Update Note", "Don't worry, your progress already been saved!");
         upsertTask.addOnSuccessListener(cloudDBZoneResult -> Log.i(TAG, "Upsert " + cloudDBZoneResult + " records"))

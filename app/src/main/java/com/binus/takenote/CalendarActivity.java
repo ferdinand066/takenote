@@ -51,6 +51,7 @@ public class CalendarActivity extends AppCompatActivity {
     CloudDBZone mCloudDBZone;
     SharedPreferences sharedPreferences;
     Toolbar toolbar;
+    Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,17 +149,41 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nav_menu, menu);
+        this.menu = menu;
+        MenuItem navGrid = menu.findItem(R.id.nav_grid);
+        MenuItem navList = menu.findItem(R.id.nav_list);
+        MenuItem navCalendar = menu.findItem(R.id.nav_calendar);
+
+        navCalendar.setVisible(false);
+        navGrid.setVisible(false);
+        navList.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        MenuItem navGrid = menu.findItem(R.id.nav_grid);
+        MenuItem navList = menu.findItem(R.id.nav_list);
+
         switch (item.getItemId()){
             case R.id.nav_profile:
                 startActivity(new Intent(this, ProfileActivity.class));
                 break;
+            case R.id.nav_grid:
+                navGrid.setVisible(false);
+                navList.setVisible(true);
+                activityRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+                break;
+            case R.id.nav_list:
+                navGrid.setVisible(true);
+                navList.setVisible(false);
+                activityRecyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+                break;
             case R.id.nav_calendar:
                 startActivity(new Intent(this, CalendarActivity.class));
+                break;
+            case R.id.nav_notes:
+                startActivity(new Intent(this, HomeActivity.class));
                 break;
         }
 
