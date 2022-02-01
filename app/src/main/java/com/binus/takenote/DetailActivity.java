@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.binus.takenote.model.Note;
 import com.binus.takenote.model.NoteDB;
@@ -55,7 +58,7 @@ public class DetailActivity extends AppCompatActivity {
     private RelativeLayout background;
     SharedPreferences sharedPreferences;
     Note note = null;
-    ImageView icDelete, icBrush;
+    ImageView icDelete, icBrush, icCopy;
 
     AGConnectCloudDB mCloudDB;
     CloudDBZoneConfig mConfig;
@@ -76,6 +79,7 @@ public class DetailActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.back_btn);
         icDelete = findViewById(R.id.ic_delete);
         icBrush = findViewById(R.id.ic_brush);
+        icCopy = findViewById(R.id.ic_copy);
         themeList = findViewById(R.id.theme_list);
         btnDark = createThemeButton(R.id.btn_dark, 1);
         btnPurple = createThemeButton(R.id.btn_purple, 2);
@@ -109,7 +113,7 @@ public class DetailActivity extends AppCompatActivity {
 
         backBtn.setOnClickListener(v -> {
             updateNoteData();
-            startActivity(new Intent(DetailActivity.this, HomeActivity.class))         ;
+            startActivity(new Intent(DetailActivity.this, HomeActivity.class));
             finish();
         });
 
@@ -119,6 +123,14 @@ public class DetailActivity extends AppCompatActivity {
 
         icBrush.setOnClickListener(v -> {
             themeList.setVisibility(themeList.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        });
+
+        icCopy.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Copied Text", "Header: " + etTitle.getText().toString() + "\n"
+            + "Content:\n" + etDetail.getText().toString());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(DetailActivity.this, "Text Copied!", Toast.LENGTH_SHORT).show();
         });
 
     }

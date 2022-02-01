@@ -59,6 +59,7 @@ public class HomeActivity extends AppCompatActivity {
     FloatingActionButton btnAdd;
     AccountAuthService authService;
     AccountAuthParams authParams;
+    Menu menu;
     private static final String TAG = "HomeActivity";
 
     AGConnectCloudDB mCloudDB;
@@ -155,24 +156,38 @@ public class HomeActivity extends AppCompatActivity {
             Log.i(TAG, "processQueryResult: " + e.getMessage());
         }
         snapshot.release();
-        adapter = new NoteAdapter(notes, HomeActivity.this);
+        adapter = new NoteAdapter(notes, HomeActivity.this, R.layout.item_note);
         noteList.setAdapter(adapter);
         noteList.setLayoutManager(new GridLayoutManager(this, 2));
         adapter.notifyDataSetChanged();
+
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nav_menu, menu);
+        this.menu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        MenuItem navGrid = menu.findItem(R.id.nav_grid);
+        MenuItem navList = menu.findItem(R.id.nav_list);
         switch (item.getItemId()){
             case R.id.nav_profile:
                 startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
                 break;
+            case R.id.nav_grid:
+                navGrid.setVisible(false);
+                navList.setVisible(true);
+                noteList.setLayoutManager(new GridLayoutManager(this, 2));
+                break;
+            case R.id.nav_list:
+                navGrid.setVisible(true);
+                navList.setVisible(false);
+                noteList.setLayoutManager(new GridLayoutManager(this, 1));
             case R.id.nav_calendar:
                 startActivity(new Intent(HomeActivity.this, CalendarActivity.class));
                 break;

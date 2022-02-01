@@ -33,11 +33,20 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
-                android:layout_toLeftOf="@id/ic_delete"
-                android:layout_marginHorizontal="15dp"
+                android:layout_toLeftOf="@id/ic_copy"
                 android:id="@+id/ic_brush"
                 app:tint="@color/light_gray"
                 android:src="@drawable/ic_brush" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_toLeftOf="@id/ic_delete"
+                android:layout_marginHorizontal="15dp"
+                android:id="@+id/ic_copy"
+                app:tint="@color/light_gray"
+                android:src="@drawable/ic_copy" />
 
             <ImageView
                 android:layout_width="30dp"
