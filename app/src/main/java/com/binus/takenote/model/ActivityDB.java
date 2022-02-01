@@ -15,18 +15,14 @@ import com.huawei.agconnect.cloud.database.annotations.PrimaryKeys;
 import java.util.Date;
 
 /**
- * Definition of ObjectType NoteDB.
+ * Definition of ObjectType ActivityDB.
  *
  * @since 2022-02-01
  */
 @PrimaryKeys({"id"})
-@Indexes({"NoteIndex:id"})
-public final class NoteDB extends CloudDBZoneObject {
+@Indexes({"activityindex:id"})
+public final class ActivityDB extends CloudDBZoneObject {
     private String id;
-
-    @NotNull
-    @DefaultValue(stringValue = "-")
-    private String userId;
 
     @NotNull
     @DefaultValue(stringValue = "-")
@@ -34,19 +30,19 @@ public final class NoteDB extends CloudDBZoneObject {
 
     @NotNull
     @DefaultValue(stringValue = "-")
-    private String content;
+    private String description;
 
     private Date date;
 
-    @DefaultValue(intValue = 1)
-    private Integer color;
+    @NotNull
+    @DefaultValue(stringValue = "-")
+    private String userId;
 
-    public NoteDB() {
-        super(NoteDB.class);
-        this.userId = "-";
+    public ActivityDB() {
+        super(ActivityDB.class);
         this.title = "-";
-        this.content = "-";
-        this.color = 1;
+        this.description = "-";
+        this.userId = "-";
     }
 
     public void setId(String id) {
@@ -57,14 +53,6 @@ public final class NoteDB extends CloudDBZoneObject {
         return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -73,12 +61,12 @@ public final class NoteDB extends CloudDBZoneObject {
         return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getContent() {
-        return content;
+    public String getDescription() {
+        return description;
     }
 
     public void setDate(Date date) {
@@ -89,12 +77,12 @@ public final class NoteDB extends CloudDBZoneObject {
         return date;
     }
 
-    public void setColor(Integer color) {
-        this.color = color;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public Integer getColor() {
-        return color;
+    public String getUserId() {
+        return userId;
     }
 
 }

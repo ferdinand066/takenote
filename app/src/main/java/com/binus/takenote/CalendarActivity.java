@@ -3,6 +3,7 @@ package com.binus.takenote;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -12,9 +13,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.binus.takenote.adapter.ActivityAdapter;
 import com.binus.takenote.adapter.NoteAdapter;
+import com.binus.takenote.model.Activity;
+import com.binus.takenote.model.ActivityDB;
 import com.binus.takenote.model.Note;
 import com.binus.takenote.model.NoteDB;
 import com.binus.takenote.model.ObjectTypeInfoHelper;
@@ -30,78 +34,41 @@ import com.huawei.agconnect.cloud.database.CloudDBZoneObjectList;
 import com.huawei.agconnect.cloud.database.CloudDBZoneQuery;
 import com.huawei.agconnect.cloud.database.CloudDBZoneSnapshot;
 import com.huawei.agconnect.cloud.database.exceptions.AGConnectCloudDBException;
-import com.huawei.hmf.tasks.OnFailureListener;
-import com.huawei.hmf.tasks.OnSuccessListener;
 import com.huawei.hmf.tasks.Task;
-import com.huawei.hms.ads.AdParam;
-import com.huawei.hms.ads.BannerAdSize;
-import com.huawei.hms.ads.HwAds;
-import com.huawei.hms.ads.banner.BannerView;
-import com.huawei.hms.support.account.AccountAuthManager;
-import com.huawei.hms.support.account.request.AccountAuthParams;
-import com.huawei.hms.support.account.request.AccountAuthParamsHelper;
-import com.huawei.hms.support.account.service.AccountAuthService;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
 
-public class HomeActivity extends AppCompatActivity {
+public class CalendarActivity extends AppCompatActivity {
+    private static final String TAG = "CalendarActivity";
 
-    Toolbar toolbar;
-    NoteAdapter adapter;
-    ArrayList<Note> notes;
-    RecyclerView noteList;
-    BannerView bannerView;
-    SharedPreferences sharedPreferences;
-    FloatingActionButton btnAdd;
-    AccountAuthService authService;
-    AccountAuthParams authParams;
-    Menu menu;
-    private static final String TAG = "HomeActivity";
+    ActivityAdapter adapter;
+    ArrayList<Activity> activities;
+    RecyclerView activityRecyclerView;
+    FloatingActionButton fab;
 
     AGConnectCloudDB mCloudDB;
     CloudDBZoneConfig mConfig;
     CloudDBZone mCloudDBZone;
-    String userId;
+    SharedPreferences sharedPreferences;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        HwAds.init(this);
-        initDatabase();
+        setContentView(R.layout.activity_calendar);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        notes = new ArrayList<>();
-        noteList = findViewById(R.id.noteList);
+        activities = new ArrayList<>();
+        activityRecyclerView = findViewById(R.id.activityRecyclerView);
+        fab = findViewById(R.id.btn_add);
 
         sharedPreferences = this.getSharedPreferences("UserId", Context.MODE_PRIVATE);
-
-        bannerView = new BannerView(this);
-        bannerView.setAdId("testw6vs28auh3");
-        bannerView.setBannerAdSize(BannerAdSize.BANNER_SIZE_SMART);
-        bannerView.setBannerRefresh(60);
-        AdParam adParam = new AdParam.Builder().build();
-        bannerView.loadAd(adParam);
-
-        LinearLayout rootView = findViewById(R.id.view_container);
-        rootView.addView(bannerView);
-
-        btnAdd = findViewById(R.id.btn_add);
-        btnAdd.setOnClickListener(v -> {
-            Intent i = new Intent(getApplicationContext(), DetailActivity.class);
-            i.putExtra("noteId", UUID.randomUUID().toString());
-            startActivity(i);
-            finish();
+        initDatabase();
+        fab.setOnClickListener(v -> {
+            startActivity(new Intent(this, AddCalendarActivity.class));
         });
-
-        authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM).setEmail().setAuthorizationCode().createParams();
-        authService = AccountAuthManager.getService(this, authParams);
     }
 
     private void initDatabase() {
@@ -123,73 +90,75 @@ public class HomeActivity extends AppCompatActivity {
         openDBZoneTask.addOnSuccessListener(cloudDBZone -> {
             Log.i(TAG, "open cloudDBZone success");
             mCloudDBZone = cloudDBZone;
-            getNoteData();
+            getCalendarData();
         }).addOnFailureListener(e -> Log.w(TAG, "open cloudDBZone failed for " + e.getMessage()));
     }
 
-    private void getNoteData(){
+    private void getCalendarData(){
         if (mCloudDBZone == null) {
             Log.w(TAG, "CloudDBZone is null, try re-open it");
             return;
         }
 
-        Task<CloudDBZoneSnapshot<NoteDB>> queryTask = mCloudDBZone.executeQuery(
-                CloudDBZoneQuery.where(NoteDB.class).orderByDesc("date"),
+        Task<CloudDBZoneSnapshot<ActivityDB>> queryTask = mCloudDBZone.executeQuery(
+                CloudDBZoneQuery.where(ActivityDB.class).orderByAsc("date").equalTo("userId", sharedPreferences.getString("id", null)),
                 CloudDBZoneQuery.CloudDBZoneQueryPolicy.POLICY_QUERY_FROM_CLOUD_ONLY);
         queryTask.addOnSuccessListener(snapshot -> processQueryResult(snapshot))
                 .addOnFailureListener(e -> Log.i(TAG, "Gagal karena " + e.getMessage()));
     }
 
-    private void processQueryResult(CloudDBZoneSnapshot<NoteDB> snapshot) {
+    public void deleteActivity(Activity activity){
+        if (mCloudDBZone == null) {
+            Log.w(TAG, "CloudDBZone is null, try re-open it");
+            return;
+        }
 
-        CloudDBZoneObjectList<NoteDB> c = snapshot.getSnapshotObjects();
-        ArrayList<NoteDB> bookInfoList = new ArrayList<>();
+        ActivityDB a = new ActivityDB();
+        a.setId(activity.getId());
+
+        Task<Integer> deleteTask = mCloudDBZone.executeDelete(a);
+        deleteTask.addOnSuccessListener(integer -> {
+            Toast.makeText(this, "Activity Deleted!", Toast.LENGTH_SHORT).show();
+            activities.remove(activity);
+            adapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+            Log.i(TAG, "Gagal karena" + e.getMessage());
+        });
+    }
+
+    private void processQueryResult(CloudDBZoneSnapshot<ActivityDB> snapshot) {
+
+        CloudDBZoneObjectList<ActivityDB> c = snapshot.getSnapshotObjects();
+        ArrayList<ActivityDB> calendarList = new ArrayList<>();
         try {
             while (c.hasNext()) {
-                NoteDB n = c.next();
-                bookInfoList.add(n);
-                if(n.getUserId().equals(sharedPreferences.getString("id", null))){
-                    notes.add( new Note(n.getId(), n.getTitle(), n.getContent(), n.getDate(), n.getColor()));
-                }
+                ActivityDB a = c.next();
+                activities.add( new Activity(a.getId(), a.getTitle(), a.getDescription(), a.getDate()));
             }
         } catch (AGConnectCloudDBException e) {
             Log.i(TAG, "processQueryResult: " + e.getMessage());
         }
         snapshot.release();
-        adapter = new NoteAdapter(notes, HomeActivity.this, R.layout.item_note);
-        noteList.setAdapter(adapter);
-        noteList.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter = new ActivityAdapter(activities, CalendarActivity.this);
+        activityRecyclerView.setAdapter(adapter);
+        activityRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.notifyDataSetChanged();
-
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nav_menu, menu);
-        this.menu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        MenuItem navGrid = menu.findItem(R.id.nav_grid);
-        MenuItem navList = menu.findItem(R.id.nav_list);
         switch (item.getItemId()){
             case R.id.nav_profile:
-                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                startActivity(new Intent(this, ProfileActivity.class));
                 break;
-            case R.id.nav_grid:
-                navGrid.setVisible(false);
-                navList.setVisible(true);
-                noteList.setLayoutManager(new GridLayoutManager(this, 2));
-                break;
-            case R.id.nav_list:
-                navGrid.setVisible(true);
-                navList.setVisible(false);
-                noteList.setLayoutManager(new GridLayoutManager(this, 1));
             case R.id.nav_calendar:
-                startActivity(new Intent(HomeActivity.this, CalendarActivity.class));
+                startActivity(new Intent(this, CalendarActivity.class));
                 break;
         }
 
